@@ -1,0 +1,27 @@
+const {resolve} = require('path')
+
+module.exports = {
+  context: process.cwd(),
+  entry: {
+    app: './index.js'
+  },
+  output: {
+    filename: 'index.js',
+    path: resolve(__dirname, './public')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          plugins: [
+            'transform-pug-to-react'
+          ],
+          cacheDirectory: './tmp'
+        }
+      }
+    ]
+  }
+}

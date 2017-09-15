@@ -6,5 +6,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "jigsaw (http://jgs.me)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-transform-pug-to-react": "^0.5.0",
+    "mobx": "^3.2.2",
+    "mobx-logger": "^0.6.0",
+    "mobx-react": "^4.2.2",
+    "node-static": "^0.7.9",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "webpack": "^3.4.1"
+  }
 }
