@@ -1,4 +1,4 @@
-import {extendObservable, observable, action, asMap} from 'mobx'
+import {observable, action} from 'mobx'
 
 const asyncFn = () => new Promise(resolve => {
   setTimeout(resolve, 1000)
@@ -7,19 +7,17 @@ const asyncFn = () => new Promise(resolve => {
 export default class Store {
   constructor (root = null) {
     this.root = root
-    extendObservable(this, {
-      count: 0,
-      stores: observable.map({}),
-      get double () {
-        return this.count * 2
-      },
-      tick: action(async event => {
-        await asyncFn()
-        this.count++
-      }),
-      setStore: action((name, Store) => {
-        this.stores.set(name, new Store(this))
-      })
-    })
   }
+
+  @observable count = 0
+  @computed get double () {
+    return this.count * 2
+  }
+  @action tick = async event => {
+    await asyncFn()
+    this.count++
+  }
+
+  @observable stores = observable.map()
+  @action setStore = (name, Store) => this.stores.set(name, new Store(this))
 }

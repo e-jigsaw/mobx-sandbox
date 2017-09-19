@@ -17,7 +17,11 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           plugins: [
-            'transform-pug-to-react'
+            'transform-pug-to-react', 'transform-decorators',
+            [
+              'transform-class-properties',
+              {loose: true}
+            ]
           ],
           cacheDirectory: './tmp'
         }
