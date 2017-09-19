@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import {createElement} from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'mobx-react'

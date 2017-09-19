@@ -1,4 +1,4 @@
-import {observable, action} from 'mobx'
+import {observable, action, computed} from 'mobx'
 
 const asyncFn = () => new Promise(resolve => {
   setTimeout(resolve, 1000)
