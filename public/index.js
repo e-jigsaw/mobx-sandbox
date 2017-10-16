@@ -9354,9 +9354,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 Object(__WEBPACK_IMPORTED_MODULE_4_mobx_logger__["enableLogging"])();
-var element = new __WEBPACK_IMPORTED_MODULE_6__src_Store1_js__["a" /* Element */]();
+var store = new __WEBPACK_IMPORTED_MODULE_6__src_Store1_js__["a" /* default */]();
+window.store = store;
 
-Object(__WEBPACK_IMPORTED_MODULE_2_react_dom__["render"])(Object(__WEBPACK_IMPORTED_MODULE_1_react__["createElement"])(__WEBPACK_IMPORTED_MODULE_3_mobx_react__["a" /* Provider */], { element: element }, Object(__WEBPACK_IMPORTED_MODULE_1_react__["createElement"])(__WEBPACK_IMPORTED_MODULE_5__src_App1_js__["a" /* default */])), document.getElementById('app'));
+Object(__WEBPACK_IMPORTED_MODULE_2_react_dom__["render"])(Object(__WEBPACK_IMPORTED_MODULE_1_react__["createElement"])(__WEBPACK_IMPORTED_MODULE_3_mobx_react__["a" /* Provider */], { store: store }, Object(__WEBPACK_IMPORTED_MODULE_1_react__["createElement"])(__WEBPACK_IMPORTED_MODULE_5__src_App1_js__["a" /* default */])), document.getElementById('app'));
 
 /***/ }),
 /* 143 */
@@ -35048,65 +35049,104 @@ var now = exports.now = function now() {
 
 
 /* harmony default export */ __webpack_exports__["a"] = (Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["b" /* inject */])(function (_ref) {
-  var element = _ref.element;
-  return { element: element };
+  var store = _ref.store;
+  return { store: store };
 })(Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["c" /* observer */])(function (_ref2) {
-  var element = _ref2.element;
+  var store = _ref2.store;
 
-  console.log(element);
+  console.log(store);
+  var onClick = function onClick(prop) {
+    return function (_) {
+      return store.change({
+        prop: prop,
+        len: document.getElementById('len').value,
+        value: document.getElementById('val').value
+      });
+    };
+  };
+  var onClick1 = function onClick1(_) {
+    return store.turn(document.getElementById('val').value);
+  };
+  var elements = store.elements.map(function (element, i) {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      'g',
+      { key: i },
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('rect', { transform: element.transform, x: element.px, y: element.py, fill: element.color, width: element.width, height: element.height }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x1, y1: element.points.y1, x2: element.points.x2, y2: element.points.y2, stroke: '#f00', strokeWidth: '3' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x2, y1: element.points.y2, x2: element.points.x3, y2: element.points.y3, stroke: '#f00', strokeWidth: '3' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x3, y1: element.points.y3, x2: element.points.x4, y2: element.points.y4, stroke: '#f00', strokeWidth: '3' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x4, y1: element.points.y4, x2: element.points.x1, y2: element.points.y1, stroke: '#f00', strokeWidth: '3' })
+    );
+  });
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
     'div',
     null,
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { id: 'input' }),
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'button',
-      { onClick: element.change('x') },
-      'x'
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'button',
-      { onClick: element.change('y') },
-      'y'
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'button',
-      { onClick: element.change('width') },
-      'width'
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'button',
-      { onClick: element.change('height') },
-      'height'
+      'div',
+      null,
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'span',
+        null,
+        store.elements.length
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { id: 'len' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { id: 'val' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: onClick('x') },
+        'x'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: onClick('y') },
+        'y'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: onClick('width') },
+        'width'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: onClick('height') },
+        'height'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: onClick('rotate') },
+        'rotate'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: onClick1 },
+        'turn'
+      )
     ),
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'div',
       null,
-      element.x
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: store.add },
+        'add'
+      )
     ),
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'div',
-      null,
-      element.y
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'div',
-      null,
-      element.width
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'div',
-      null,
-      element.height
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'div',
-      null,
-      element.px
-    ),
-    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-      'div',
-      null,
-      element.py
+      'svg',
+      { width: '100%', height: '100%' },
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'g',
+        null,
+        elements
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'g',
+        null,
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymin, x2: store.boundingBox.xmax, y2: store.boundingBox.ymin, stroke: '#0f0', strokeWidth: '3' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymin, x2: store.boundingBox.xmin, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmax, y1: store.boundingBox.ymin, x2: store.boundingBox.xmax, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymax, x2: store.boundingBox.xmax, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' })
+      )
     )
   );
 })));
@@ -35117,11 +35157,11 @@ var now = exports.now = function now() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Element; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Store; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(54);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _class3, _descriptor5;
+var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _class3, _descriptor6, _class5, _descriptor7, _descriptor8, _descriptor9, _descriptor10;
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -35174,6 +35214,18 @@ function _initializerWarningHelper(descriptor, context) {
 
 
 
+var rad = Math.PI / 180;
+var degreeRound = function degreeRound(deg) {
+  switch (true) {
+    case deg < 0:
+      return 360 + deg;
+    case deg > 360:
+      return deg - 360;
+    default:
+      return deg;
+  }
+};
+
 var Box = (_class = function Box() {
   _classCallCheck(this, Box);
 
@@ -35184,44 +35236,46 @@ var Box = (_class = function Box() {
   _initDefineProp(this, 'width', _descriptor3, this);
 
   _initDefineProp(this, 'height', _descriptor4, this);
+
+  _initDefineProp(this, 'rotate', _descriptor5, this);
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'x', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
-    return 0;
+    return 100;
   }
 }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'y', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
-    return 0;
+    return 100;
   }
 }), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'width', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
-    return 0;
+    return 100;
   }
 }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'height', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 100;
+  }
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'rotate', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
     return 0;
   }
 })), _class);
-
-
 var Element = (_class3 = function (_Box) {
   _inherits(Element, _Box);
 
-  function Element() {
-    var _ref;
-
-    var _temp, _this, _ret;
-
+  function Element(color) {
     _classCallCheck(this, Element);
 
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    var _this = _possibleConstructorReturn(this, (Element.__proto__ || Object.getPrototypeOf(Element)).call(this));
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Element.__proto__ || Object.getPrototypeOf(Element)).call.apply(_ref, [this].concat(args))), _this), _initDefineProp(_this, 'change', _descriptor5, _this), _temp), _possibleConstructorReturn(_this, _ret);
+    _initDefineProp(_this, 'change', _descriptor6, _this);
+
+    _this.color = color;
+    return _this;
   }
 
   _createClass(Element, [{
@@ -35234,21 +35288,139 @@ var Element = (_class3 = function (_Box) {
     get: function get() {
       return this.y - this.height / 2;
     }
+  }, {
+    key: 'r',
+    get: function get() {
+      return Math.sqrt(Math.pow(this.width / 2, 2) + Math.pow(this.height / 2, 2));
+    }
+  }, {
+    key: 'points',
+    get: function get() {
+      var r1 = degreeRound(Math.atan2(this.py - this.y, this.px - this.x) / rad);
+      var r2 = degreeRound(Math.atan2(this.py + this.height - this.y, this.px - this.x) / rad);
+      var r3 = degreeRound(Math.atan2(this.py + this.height - this.y, this.px + this.width - this.x) / rad);
+      var r4 = degreeRound(Math.atan2(this.py - this.y, this.px + this.width - this.x) / rad);
+      return {
+        x1: this.r * Math.cos((r1 + this.rotate) * rad) + this.x,
+        y1: this.r * Math.sin((r1 + this.rotate) * rad) + this.y,
+        x2: this.r * Math.cos((r2 + this.rotate) * rad) + this.x,
+        y2: this.r * Math.sin((r2 + this.rotate) * rad) + this.y,
+        x3: this.r * Math.cos((r3 + this.rotate) * rad) + this.x,
+        y3: this.r * Math.sin((r3 + this.rotate) * rad) + this.y,
+        x4: this.r * Math.cos((r4 + this.rotate) * rad) + this.x,
+        y4: this.r * Math.sin((r4 + this.rotate) * rad) + this.y
+      };
+    }
+  }, {
+    key: 'transform',
+    get: function get() {
+      return 'rotate(' + this.rotate + ' ' + this.x + ' ' + this.y + ')';
+    }
   }]);
 
   return Element;
-}(Box), (_applyDecoratedDescriptor(_class3.prototype, 'px', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'px'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'py', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'py'), _class3.prototype), _descriptor5 = _applyDecoratedDescriptor(_class3.prototype, 'change', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}(Box), (_applyDecoratedDescriptor(_class3.prototype, 'px', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'px'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'py', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'py'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'r', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'r'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'points', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'points'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'transform', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'transform'), _class3.prototype), _descriptor6 = _applyDecoratedDescriptor(_class3.prototype, 'change', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
   enumerable: true,
   initializer: function initializer() {
     var _this2 = this;
 
-    return function (prop) {
-      return function (_) {
-        return _this2[prop] = document.getElementById('input').value;
-      };
+    return function (prop, value) {
+      var candidate = parseFloat(value);
+      _this2[prop] = prop === 'rotate' ? degreeRound(candidate) : candidate;
     };
   }
 })), _class3);
+
+
+var rand = function rand() {
+  return Math.round(Math.random() * 255);
+};
+
+var randColor = function randColor() {
+  return 'rgb(' + rand() + ',' + rand() + ',' + rand() + ')';
+};
+
+var Store = (_class5 = function () {
+  function Store() {
+    _classCallCheck(this, Store);
+
+    _initDefineProp(this, 'elements', _descriptor7, this);
+
+    _initDefineProp(this, 'add', _descriptor8, this);
+
+    _initDefineProp(this, 'change', _descriptor9, this);
+
+    _initDefineProp(this, 'turn', _descriptor10, this);
+  }
+
+  _createClass(Store, [{
+    key: 'boundingBox',
+    get: function get() {
+      return this.elements.reduce(function (prev, element) {
+        if (prev.xmin === null) {
+          prev.xmin = element.points.x1;
+          prev.ymin = element.points.y1;
+          prev.xmax = element.points.x1;
+          prev.ymax = element.points.y1;
+        }
+        [1, 2, 3, 4].forEach(function (n) {
+          var xc = element.points['x' + n];
+          var yc = element.points['y' + n];
+          if (xc < prev.xmin) prev.xmin = xc;
+          if (xc > prev.xmax) prev.xmax = xc;
+          if (yc < prev.ymin) prev.ymin = yc;
+          if (yc > prev.ymax) prev.ymax = yc;
+        });
+        return prev;
+      }, {
+        xmin: null,
+        ymin: null,
+        xmax: null,
+        ymax: null
+      });
+    }
+  }]);
+
+  return Store;
+}(), (_descriptor7 = _applyDecoratedDescriptor(_class5.prototype, 'elements', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    return __WEBPACK_IMPORTED_MODULE_0_mobx__["observable"].array();
+  }
+}), _descriptor8 = _applyDecoratedDescriptor(_class5.prototype, 'add', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this3 = this;
+
+    return function (_) {
+      return _this3.elements.push(new Element(randColor()));
+    };
+  }
+}), _descriptor9 = _applyDecoratedDescriptor(_class5.prototype, 'change', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this4 = this;
+
+    return function (_ref) {
+      var len = _ref.len,
+          prop = _ref.prop,
+          value = _ref.value;
+      return _this4.elements[len].change(prop, value);
+    };
+  }
+}), _descriptor10 = _applyDecoratedDescriptor(_class5.prototype, 'turn', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this5 = this;
+
+    return function (value) {
+      _this5.elements.forEach(function (element) {
+        return element.change('rotate', element.rotate + parseFloat(value));
+      });
+    };
+  }
+}), _applyDecoratedDescriptor(_class5.prototype, 'boundingBox', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class5.prototype, 'boundingBox'), _class5.prototype)), _class5);
+
 
 /***/ })
 /******/ ]);
