@@ -8,13 +8,16 @@ const degreeRound = deg => {
     default: return deg
   }
 }
+const rand = () => Math.round(Math.random() * 255)
+const randColor = () => `rgb(${rand()},${rand()},${rand()})`
 
 class Box {
-  @observable x = 100
-  @observable y = 100
-  @observable width = 100
-  @observable height = 100
-  @observable rotate = 0
+  @observable a = 100
+  @observable b = 0
+  @observable c = 0
+  @observable d = 100
+  @observable e = 100
+  @observable f = 100
 }
 
 class Element extends Box {
@@ -23,77 +26,82 @@ class Element extends Box {
     this.color = color
   }
 
-  @computed get px () {
-    return this.x - (this.width / 2)
+  @computed get transform () {
+    return `matrix(${this.a},${this.b},${this.c},${this.d},${this.e},${this.f})`
   }
 
-  @computed get py () {
-    return this.y - (this.height / 2)
-  }
-
-  @computed get r () {
-    return Math.sqrt(Math.pow((this.width / 2), 2) + Math.pow((this.height / 2), 2))
-  }
-
-  @computed get points () {
-    const r1 = degreeRound(
-      Math.atan2(this.py - this.y, this.px - this.x) / rad
-    )
-    const r2 = degreeRound(
-      Math.atan2((this.py + this.height) - this.y, this.px - this.x) / rad
-    )
-    const r3 = degreeRound(
-      Math.atan2((this.py + this.height) - this.y, (this.px + this.width) - this.x) / rad
-    )
-    const r4 = degreeRound(
-      Math.atan2(this.py - this.y, (this.px + this.width) - this.x) / rad
-    )
+  @computed get origins () {
     return {
-      x1: this.r * Math.cos((r1 + this.rotate) * rad) + this.x,
-      y1: this.r * Math.sin((r1 + this.rotate) * rad) + this.y,
-      x2: this.r * Math.cos((r2 + this.rotate) * rad) + this.x,
-      y2: this.r * Math.sin((r2 + this.rotate) * rad) + this.y,
-      x3: this.r * Math.cos((r3 + this.rotate) * rad) + this.x,
-      y3: this.r * Math.sin((r3 + this.rotate) * rad) + this.y,
-      x4: this.r * Math.cos((r4 + this.rotate) * rad) + this.x,
-      y4: this.r * Math.sin((r4 + this.rotate) * rad) + this.y,
+      x: (0.5 * this.a) + (0.5 * this.c) + this.e,
+      y: (0.5 * this.b) + (0.5 * this.d) + this.f
     }
   }
 
-  @computed get transform () {
-    return `rotate(${this.rotate} ${this.x} ${this.y})`
+  @computed get corners () {
+    return {
+      x1: this.e,
+      y1: this.f,
+      x2: this.a + this.e,
+      y2: this.b + this.f,
+      x3: this.a + this.c + this.e,
+      y3: this.b + this.d + this.f,
+      x4: this.c + this.e,
+      y4: this.d + this.f,
+    }
   }
 
-  @action change = (prop, value) => {
-    const candidate = parseFloat(value)
-    this[prop] = prop === 'rotate' ? degreeRound(candidate) : candidate
+  @action translate = (x, y) => {
+    this.e += x
+    this.f += y
+  }
+
+  @action rotate = (r, x, y) => {
+    const sin = Math.sin(r * rad)
+    const cos = Math.cos(r * rad)
+    this.translate(-x, -y)
+    const {a, b, c, d, e, f} = this
+    this.a = (a * cos) - (b * sin)
+    this.b = (a * sin) + (b * cos)
+    this.c = (c * cos) - (d * sin)
+    this.d = (c * sin) + (d * cos)
+    this.e = (e * cos) - (f * sin)
+    this.f = (e * sin) + (f * cos)
+    this.translate(x, y)
+  }
+
+  @action scale = (x, y, ox, oy) => {
+    this.translate(-ox, -oy)
+    this.a *= x
+    this.b *= y
+    this.c *= x
+    this.d *= y
+    this.e *= x
+    this.f *= y
+    this.translate(ox, oy)
   }
 }
-
-const rand = () => Math.round(Math.random() * 255)
-
-const randColor = () => `rgb(${rand()},${rand()},${rand()})`
 
 export default class Store {
   @observable elements = observable.array()
 
   @action add = _ => this.elements.push(new Element(randColor()))
-  @action change = ({len, prop, value}) => this.elements[len].change(prop, value)
   @action turn = value => {
-    this.elements.forEach(element => element.change('rotate', element.rotate + parseFloat(value)))
+    const {x, y} = this.boundingBoxOrigin
+    this.elements.forEach(element => element.rotate(value, x, y))
   }
+
 
   @computed get boundingBox () {
     return this.elements.reduce((prev, element) => {
       if (prev.xmin === null) {
-        prev.xmin = element.points.x1
-        prev.ymin = element.points.y1
-        prev.xmax = element.points.x1
-        prev.ymax = element.points.y1
+        prev.xmin = element.corners.x1
+        prev.ymin = element.corners.y1
+        prev.xmax = element.corners.x1
+        prev.ymax = element.corners.y1
       }
       [1, 2, 3, 4].forEach(n => {
-        const xc = element.points[`x${n}`]
-        const yc = element.points[`y${n}`]
+        const xc = element.corners[`x${n}`]
+        const yc = element.corners[`y${n}`]
         if (xc < prev.xmin) prev.xmin = xc
         if (xc > prev.xmax) prev.xmax = xc
         if (yc < prev.ymin) prev.ymin = yc
@@ -106,5 +114,20 @@ export default class Store {
       xmax: null,
       ymax: null
     })
+  }
+
+  @computed get boundingBoxOrigin () {
+    if (this.boundingBox.xmin === null) return {
+      x: 0,
+      y: 0
+    }
+    return {
+      x: this.boundingBox.xmax - (
+        (this.boundingBox.xmax - this.boundingBox.xmin) / 2
+      ),
+      y: this.boundingBox.ymax - (
+        (this.boundingBox.ymax - this.boundingBox.ymin) / 2
+      )
+    }
   }
 }

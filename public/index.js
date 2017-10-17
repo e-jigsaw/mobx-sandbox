@@ -35044,6 +35044,8 @@ var now = exports.now = function now() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react__ = __webpack_require__(141);
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 
 
 
@@ -35055,27 +35057,46 @@ var now = exports.now = function now() {
   var store = _ref2.store;
 
   console.log(store);
-  var onClick = function onClick(prop) {
-    return function (_) {
-      return store.change({
-        prop: prop,
-        len: document.getElementById('len').value,
-        value: document.getElementById('val').value
-      });
-    };
+  var translate = function translate(_) {
+    var len = parseInt(document.getElementById('len').value);
+
+    var _document$getElementB = document.getElementById('val').value.split(','),
+        _document$getElementB2 = _slicedToArray(_document$getElementB, 2),
+        x = _document$getElementB2[0],
+        y = _document$getElementB2[1];
+
+    store.elements[len].translate(parseFloat(x), parseFloat(y));
   };
-  var onClick1 = function onClick1(_) {
-    return store.turn(document.getElementById('val').value);
+  var rotate = function rotate(_) {
+    var len = parseInt(document.getElementById('len').value);
+    var r = parseFloat(document.getElementById('val').value);
+    var element = store.elements[len];
+    element.rotate(r, element.origins.x, element.origins.y);
+  };
+  var scale = function scale(_) {
+    var len = parseInt(document.getElementById('len').value);
+
+    var _document$getElementB3 = document.getElementById('val').value.split(','),
+        _document$getElementB4 = _slicedToArray(_document$getElementB3, 2),
+        x = _document$getElementB4[0],
+        y = _document$getElementB4[1];
+
+    var element = store.elements[len];
+    element.scale(parseFloat(x), parseFloat(y), element.corners.x3, element.corners.y3);
+  };
+  var turn = function turn(_) {
+    return store.turn(parseFloat(document.getElementById('val').value));
   };
   var elements = store.elements.map(function (element, i) {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
       'g',
       { key: i },
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('rect', { transform: element.transform, x: element.px, y: element.py, fill: element.color, width: element.width, height: element.height }),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x1, y1: element.points.y1, x2: element.points.x2, y2: element.points.y2, stroke: '#f00', strokeWidth: '3' }),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x2, y1: element.points.y2, x2: element.points.x3, y2: element.points.y3, stroke: '#f00', strokeWidth: '3' }),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x3, y1: element.points.y3, x2: element.points.x4, y2: element.points.y4, stroke: '#f00', strokeWidth: '3' }),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.points.x4, y1: element.points.y4, x2: element.points.x1, y2: element.points.y1, stroke: '#f00', strokeWidth: '3' })
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('rect', { fill: element.color, transform: element.transform, width: '1', height: '1' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('circle', { r: '3', cx: element.origins.x, cy: element.origins.y, fill: '#f00' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.corners.x1, y1: element.corners.y1, x2: element.corners.x2, y2: element.corners.y2, stroke: '#f00', strokeWidth: '3' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.corners.x2, y1: element.corners.y2, x2: element.corners.x3, y2: element.corners.y3, stroke: '#f00', strokeWidth: '3' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.corners.x3, y1: element.corners.y3, x2: element.corners.x4, y2: element.corners.y4, stroke: '#f00', strokeWidth: '3' }),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: element.corners.x4, y1: element.corners.y4, x2: element.corners.x1, y2: element.corners.y1, stroke: '#f00', strokeWidth: '3' })
     );
   });
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -35093,32 +35114,22 @@ var now = exports.now = function now() {
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { id: 'val' }),
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'button',
-        { onClick: onClick('x') },
-        'x'
+        { onClick: translate },
+        'translate'
       ),
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'button',
-        { onClick: onClick('y') },
-        'y'
-      ),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'button',
-        { onClick: onClick('width') },
-        'width'
-      ),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'button',
-        { onClick: onClick('height') },
-        'height'
-      ),
-      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'button',
-        { onClick: onClick('rotate') },
+        { onClick: rotate },
         'rotate'
       ),
       __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'button',
-        { onClick: onClick1 },
+        { onClick: scale },
+        'scale'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: turn },
         'turn'
       )
     ),
@@ -35143,9 +35154,10 @@ var now = exports.now = function now() {
         'g',
         null,
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymin, x2: store.boundingBox.xmax, y2: store.boundingBox.ymin, stroke: '#0f0', strokeWidth: '3' }),
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymin, x2: store.boundingBox.xmin, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' }),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmax, y1: store.boundingBox.ymin, x2: store.boundingBox.xmax, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' }),
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymax, x2: store.boundingBox.xmax, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' })
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmax, y1: store.boundingBox.ymax, x2: store.boundingBox.xmin, y2: store.boundingBox.ymax, stroke: '#0f0', strokeWidth: '3' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('line', { x1: store.boundingBox.xmin, y1: store.boundingBox.ymax, x2: store.boundingBox.xmin, y2: store.boundingBox.ymin, stroke: '#0f0', strokeWidth: '3' }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('circle', { r: '3', fill: '#0f0', cx: store.boundingBoxOrigin.x, cy: store.boundingBoxOrigin.y })
       )
     )
   );
@@ -35161,7 +35173,7 @@ var now = exports.now = function now() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(54);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _class3, _descriptor6, _class5, _descriptor7, _descriptor8, _descriptor9, _descriptor10;
+var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _class3, _descriptor7, _descriptor8, _descriptor9, _class5, _descriptor10, _descriptor11, _descriptor12;
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -35225,43 +35237,56 @@ var degreeRound = function degreeRound(deg) {
       return deg;
   }
 };
+var rand = function rand() {
+  return Math.round(Math.random() * 255);
+};
+var randColor = function randColor() {
+  return 'rgb(' + rand() + ',' + rand() + ',' + rand() + ')';
+};
 
 var Box = (_class = function Box() {
   _classCallCheck(this, Box);
 
-  _initDefineProp(this, 'x', _descriptor, this);
+  _initDefineProp(this, 'a', _descriptor, this);
 
-  _initDefineProp(this, 'y', _descriptor2, this);
+  _initDefineProp(this, 'b', _descriptor2, this);
 
-  _initDefineProp(this, 'width', _descriptor3, this);
+  _initDefineProp(this, 'c', _descriptor3, this);
 
-  _initDefineProp(this, 'height', _descriptor4, this);
+  _initDefineProp(this, 'd', _descriptor4, this);
 
-  _initDefineProp(this, 'rotate', _descriptor5, this);
-}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'x', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  _initDefineProp(this, 'e', _descriptor5, this);
+
+  _initDefineProp(this, 'f', _descriptor6, this);
+}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'a', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
     return 100;
   }
-}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'y', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
-  enumerable: true,
-  initializer: function initializer() {
-    return 100;
-  }
-}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'width', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
-  enumerable: true,
-  initializer: function initializer() {
-    return 100;
-  }
-}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'height', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
-  enumerable: true,
-  initializer: function initializer() {
-    return 100;
-  }
-}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'rotate', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'b', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
     return 0;
+  }
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'c', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 0;
+  }
+}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'd', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 100;
+  }
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'e', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 100;
+  }
+}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'f', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 100;
   }
 })), _class);
 var Element = (_class3 = function (_Box) {
@@ -35272,85 +35297,107 @@ var Element = (_class3 = function (_Box) {
 
     var _this = _possibleConstructorReturn(this, (Element.__proto__ || Object.getPrototypeOf(Element)).call(this));
 
-    _initDefineProp(_this, 'change', _descriptor6, _this);
+    _initDefineProp(_this, 'translate', _descriptor7, _this);
+
+    _initDefineProp(_this, 'rotate', _descriptor8, _this);
+
+    _initDefineProp(_this, 'scale', _descriptor9, _this);
 
     _this.color = color;
     return _this;
   }
 
   _createClass(Element, [{
-    key: 'px',
+    key: 'transform',
     get: function get() {
-      return this.x - this.width / 2;
+      return 'matrix(' + this.a + ',' + this.b + ',' + this.c + ',' + this.d + ',' + this.e + ',' + this.f + ')';
     }
   }, {
-    key: 'py',
+    key: 'origins',
     get: function get() {
-      return this.y - this.height / 2;
-    }
-  }, {
-    key: 'r',
-    get: function get() {
-      return Math.sqrt(Math.pow(this.width / 2, 2) + Math.pow(this.height / 2, 2));
-    }
-  }, {
-    key: 'points',
-    get: function get() {
-      var r1 = degreeRound(Math.atan2(this.py - this.y, this.px - this.x) / rad);
-      var r2 = degreeRound(Math.atan2(this.py + this.height - this.y, this.px - this.x) / rad);
-      var r3 = degreeRound(Math.atan2(this.py + this.height - this.y, this.px + this.width - this.x) / rad);
-      var r4 = degreeRound(Math.atan2(this.py - this.y, this.px + this.width - this.x) / rad);
       return {
-        x1: this.r * Math.cos((r1 + this.rotate) * rad) + this.x,
-        y1: this.r * Math.sin((r1 + this.rotate) * rad) + this.y,
-        x2: this.r * Math.cos((r2 + this.rotate) * rad) + this.x,
-        y2: this.r * Math.sin((r2 + this.rotate) * rad) + this.y,
-        x3: this.r * Math.cos((r3 + this.rotate) * rad) + this.x,
-        y3: this.r * Math.sin((r3 + this.rotate) * rad) + this.y,
-        x4: this.r * Math.cos((r4 + this.rotate) * rad) + this.x,
-        y4: this.r * Math.sin((r4 + this.rotate) * rad) + this.y
+        x: 0.5 * this.a + 0.5 * this.c + this.e,
+        y: 0.5 * this.b + 0.5 * this.d + this.f
       };
     }
   }, {
-    key: 'transform',
+    key: 'corners',
     get: function get() {
-      return 'rotate(' + this.rotate + ' ' + this.x + ' ' + this.y + ')';
+      return {
+        x1: this.e,
+        y1: this.f,
+        x2: this.a + this.e,
+        y2: this.b + this.f,
+        x3: this.a + this.c + this.e,
+        y3: this.b + this.d + this.f,
+        x4: this.c + this.e,
+        y4: this.d + this.f
+      };
     }
   }]);
 
   return Element;
-}(Box), (_applyDecoratedDescriptor(_class3.prototype, 'px', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'px'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'py', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'py'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'r', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'r'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'points', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'points'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'transform', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'transform'), _class3.prototype), _descriptor6 = _applyDecoratedDescriptor(_class3.prototype, 'change', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}(Box), (_applyDecoratedDescriptor(_class3.prototype, 'transform', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'transform'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'origins', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'origins'), _class3.prototype), _applyDecoratedDescriptor(_class3.prototype, 'corners', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class3.prototype, 'corners'), _class3.prototype), _descriptor7 = _applyDecoratedDescriptor(_class3.prototype, 'translate', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
   enumerable: true,
   initializer: function initializer() {
     var _this2 = this;
 
-    return function (prop, value) {
-      var candidate = parseFloat(value);
-      _this2[prop] = prop === 'rotate' ? degreeRound(candidate) : candidate;
+    return function (x, y) {
+      _this2.e += x;
+      _this2.f += y;
+    };
+  }
+}), _descriptor8 = _applyDecoratedDescriptor(_class3.prototype, 'rotate', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this3 = this;
+
+    return function (r, x, y) {
+      var sin = Math.sin(r * rad);
+      var cos = Math.cos(r * rad);
+      _this3.translate(-x, -y);
+      var a = _this3.a,
+          b = _this3.b,
+          c = _this3.c,
+          d = _this3.d,
+          e = _this3.e,
+          f = _this3.f;
+
+      _this3.a = a * cos - b * sin;
+      _this3.b = a * sin + b * cos;
+      _this3.c = c * cos - d * sin;
+      _this3.d = c * sin + d * cos;
+      _this3.e = e * cos - f * sin;
+      _this3.f = e * sin + f * cos;
+      _this3.translate(x, y);
+    };
+  }
+}), _descriptor9 = _applyDecoratedDescriptor(_class3.prototype, 'scale', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this4 = this;
+
+    return function (x, y, ox, oy) {
+      _this4.translate(-ox, -oy);
+      _this4.a *= x;
+      _this4.b *= y;
+      _this4.c *= x;
+      _this4.d *= y;
+      _this4.e *= x;
+      _this4.f *= y;
+      _this4.translate(ox, oy);
     };
   }
 })), _class3);
-
-
-var rand = function rand() {
-  return Math.round(Math.random() * 255);
-};
-
-var randColor = function randColor() {
-  return 'rgb(' + rand() + ',' + rand() + ',' + rand() + ')';
-};
-
 var Store = (_class5 = function () {
   function Store() {
     _classCallCheck(this, Store);
 
-    _initDefineProp(this, 'elements', _descriptor7, this);
+    _initDefineProp(this, 'elements', _descriptor10, this);
 
-    _initDefineProp(this, 'add', _descriptor8, this);
+    _initDefineProp(this, 'add', _descriptor11, this);
 
-    _initDefineProp(this, 'change', _descriptor9, this);
-
-    _initDefineProp(this, 'turn', _descriptor10, this);
+    _initDefineProp(this, 'turn', _descriptor12, this);
   }
 
   _createClass(Store, [{
@@ -35358,14 +35405,14 @@ var Store = (_class5 = function () {
     get: function get() {
       return this.elements.reduce(function (prev, element) {
         if (prev.xmin === null) {
-          prev.xmin = element.points.x1;
-          prev.ymin = element.points.y1;
-          prev.xmax = element.points.x1;
-          prev.ymax = element.points.y1;
+          prev.xmin = element.corners.x1;
+          prev.ymin = element.corners.y1;
+          prev.xmax = element.corners.x1;
+          prev.ymax = element.corners.y1;
         }
         [1, 2, 3, 4].forEach(function (n) {
-          var xc = element.points['x' + n];
-          var yc = element.points['y' + n];
+          var xc = element.corners['x' + n];
+          var yc = element.corners['y' + n];
           if (xc < prev.xmin) prev.xmin = xc;
           if (xc > prev.xmax) prev.xmax = xc;
           if (yc < prev.ymin) prev.ymin = yc;
@@ -35379,47 +35426,51 @@ var Store = (_class5 = function () {
         ymax: null
       });
     }
+  }, {
+    key: 'boundingBoxOrigin',
+    get: function get() {
+      if (this.boundingBox.xmin === null) return {
+        x: 0,
+        y: 0
+      };
+      return {
+        x: this.boundingBox.xmax - (this.boundingBox.xmax - this.boundingBox.xmin) / 2,
+        y: this.boundingBox.ymax - (this.boundingBox.ymax - this.boundingBox.ymin) / 2
+      };
+    }
   }]);
 
   return Store;
-}(), (_descriptor7 = _applyDecoratedDescriptor(_class5.prototype, 'elements', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+}(), (_descriptor10 = _applyDecoratedDescriptor(_class5.prototype, 'elements', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
     return __WEBPACK_IMPORTED_MODULE_0_mobx__["observable"].array();
   }
-}), _descriptor8 = _applyDecoratedDescriptor(_class5.prototype, 'add', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
-  enumerable: true,
-  initializer: function initializer() {
-    var _this3 = this;
-
-    return function (_) {
-      return _this3.elements.push(new Element(randColor()));
-    };
-  }
-}), _descriptor9 = _applyDecoratedDescriptor(_class5.prototype, 'change', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
-  enumerable: true,
-  initializer: function initializer() {
-    var _this4 = this;
-
-    return function (_ref) {
-      var len = _ref.len,
-          prop = _ref.prop,
-          value = _ref.value;
-      return _this4.elements[len].change(prop, value);
-    };
-  }
-}), _descriptor10 = _applyDecoratedDescriptor(_class5.prototype, 'turn', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor11 = _applyDecoratedDescriptor(_class5.prototype, 'add', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
   enumerable: true,
   initializer: function initializer() {
     var _this5 = this;
 
+    return function (_) {
+      return _this5.elements.push(new Element(randColor()));
+    };
+  }
+}), _descriptor12 = _applyDecoratedDescriptor(_class5.prototype, 'turn', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this6 = this;
+
     return function (value) {
-      _this5.elements.forEach(function (element) {
-        return element.change('rotate', element.rotate + parseFloat(value));
+      var _boundingBoxOrigin = _this6.boundingBoxOrigin,
+          x = _boundingBoxOrigin.x,
+          y = _boundingBoxOrigin.y;
+
+      _this6.elements.forEach(function (element) {
+        return element.rotate(value, x, y);
       });
     };
   }
-}), _applyDecoratedDescriptor(_class5.prototype, 'boundingBox', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class5.prototype, 'boundingBox'), _class5.prototype)), _class5);
+}), _applyDecoratedDescriptor(_class5.prototype, 'boundingBox', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class5.prototype, 'boundingBox'), _class5.prototype), _applyDecoratedDescriptor(_class5.prototype, 'boundingBoxOrigin', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class5.prototype, 'boundingBoxOrigin'), _class5.prototype)), _class5);
 
 
 /***/ })
