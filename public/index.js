@@ -35075,17 +35075,15 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
   };
   var scale = function scale(_) {
     var len = parseInt(document.getElementById('len').value);
-
-    var _document$getElementB3 = document.getElementById('val').value.split(','),
-        _document$getElementB4 = _slicedToArray(_document$getElementB3, 2),
-        x = _document$getElementB4[0],
-        y = _document$getElementB4[1];
-
+    var s = parseFloat(document.getElementById('val').value);
     var element = store.elements[len];
-    element.scale(parseFloat(x), parseFloat(y), element.corners.x3, element.corners.y3);
+    element.scale(s, element.corners.x3, element.corners.y3);
   };
   var turn = function turn(_) {
     return store.turn(parseFloat(document.getElementById('val').value));
+  };
+  var expand = function expand(_) {
+    return store.expand(parseFloat(document.getElementById('val').value));
   };
   var elements = store.elements.map(function (element, i) {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -35131,6 +35129,11 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
         'button',
         { onClick: turn },
         'turn'
+      ),
+      __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'button',
+        { onClick: expand },
+        'expand'
       )
     ),
     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -35173,7 +35176,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(54);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _class3, _descriptor7, _descriptor8, _descriptor9, _class5, _descriptor10, _descriptor11, _descriptor12;
+var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _class3, _descriptor7, _descriptor8, _descriptor9, _class5, _descriptor10, _descriptor11, _descriptor12, _descriptor13;
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -35377,14 +35380,14 @@ var Element = (_class3 = function (_Box) {
   initializer: function initializer() {
     var _this4 = this;
 
-    return function (x, y, ox, oy) {
+    return function (s, ox, oy) {
       _this4.translate(-ox, -oy);
-      _this4.a *= x;
-      _this4.b *= y;
-      _this4.c *= x;
-      _this4.d *= y;
-      _this4.e *= x;
-      _this4.f *= y;
+      _this4.a *= s;
+      _this4.b *= s;
+      _this4.c *= s;
+      _this4.d *= s;
+      _this4.e *= s;
+      _this4.f *= s;
       _this4.translate(ox, oy);
     };
   }
@@ -35398,6 +35401,8 @@ var Store = (_class5 = function () {
     _initDefineProp(this, 'add', _descriptor11, this);
 
     _initDefineProp(this, 'turn', _descriptor12, this);
+
+    _initDefineProp(this, 'expand', _descriptor13, this);
   }
 
   _createClass(Store, [{
@@ -35467,6 +35472,21 @@ var Store = (_class5 = function () {
 
       _this6.elements.forEach(function (element) {
         return element.rotate(value, x, y);
+      });
+    };
+  }
+}), _descriptor13 = _applyDecoratedDescriptor(_class5.prototype, 'expand', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this7 = this;
+
+    return function (value) {
+      var _boundingBox = _this7.boundingBox,
+          xmin = _boundingBox.xmin,
+          ymin = _boundingBox.ymin;
+
+      _this7.elements.forEach(function (element) {
+        return element.scale(value, xmin, ymin);
       });
     };
   }

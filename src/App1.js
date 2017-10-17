@@ -17,11 +17,12 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
   }
   const scale = _ => {
     const len = parseInt(document.getElementById('len').value)
-    const [x, y] = document.getElementById('val').value.split(',')
+    const s = parseFloat(document.getElementById('val').value)
     const element = store.elements[len]
-    element.scale(parseFloat(x), parseFloat(y), element.corners.x3, element.corners.y3)
+    element.scale(s, element.corners.x3, element.corners.y3)
   }
   const turn = _ => store.turn(parseFloat(document.getElementById('val').value))
+  const expand = _ => store.expand(parseFloat(document.getElementById('val').value))
   const elements = store.elements.map((element, i) => pug`
     g(key='{i}')
       rect(
@@ -62,6 +63,7 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
         button(onClick='{rotate}') rotate
         button(onClick='{scale}') scale
         button(onClick='{turn}') turn
+        button(onClick='{expand}') expand
       div
         button(onClick='{store.add}') add
       svg(width='100%' height='100%')

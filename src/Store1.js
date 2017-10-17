@@ -69,14 +69,14 @@ class Element extends Box {
     this.translate(x, y)
   }
 
-  @action scale = (x, y, ox, oy) => {
+  @action scale = (s, ox, oy) => {
     this.translate(-ox, -oy)
-    this.a *= x
-    this.b *= y
-    this.c *= x
-    this.d *= y
-    this.e *= x
-    this.f *= y
+    this.a *= s
+    this.b *= s
+    this.c *= s
+    this.d *= s
+    this.e *= s
+    this.f *= s
     this.translate(ox, oy)
   }
 }
@@ -89,7 +89,10 @@ export default class Store {
     const {x, y} = this.boundingBoxOrigin
     this.elements.forEach(element => element.rotate(value, x, y))
   }
-
+  @action expand = value => {
+    const {xmin, ymin} = this.boundingBox
+    this.elements.forEach(element => element.scale(value, xmin, ymin))
+  }
 
   @computed get boundingBox () {
     return this.elements.reduce((prev, element) => {
