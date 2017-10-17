@@ -35077,7 +35077,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
     var len = parseInt(document.getElementById('len').value);
     var s = parseFloat(document.getElementById('val').value);
     var element = store.elements[len];
-    element.scale(s, element.corners.x3, element.corners.y3);
+    element.equalizeScale(s, element.corners.x3, element.corners.y3);
   };
   var turn = function turn(_) {
     return store.turn(parseFloat(document.getElementById('val').value));
@@ -35176,7 +35176,7 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(54);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _class3, _descriptor7, _descriptor8, _descriptor9, _class5, _descriptor10, _descriptor11, _descriptor12, _descriptor13;
+var _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _class3, _descriptor7, _descriptor8, _descriptor9, _descriptor10, _class5, _descriptor11, _descriptor12, _descriptor13, _descriptor14;
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
@@ -35230,16 +35230,6 @@ function _initializerWarningHelper(descriptor, context) {
 
 
 var rad = Math.PI / 180;
-var degreeRound = function degreeRound(deg) {
-  switch (true) {
-    case deg < 0:
-      return 360 + deg;
-    case deg > 360:
-      return deg - 360;
-    default:
-      return deg;
-  }
-};
 var rand = function rand() {
   return Math.round(Math.random() * 255);
 };
@@ -35304,7 +35294,9 @@ var Element = (_class3 = function (_Box) {
 
     _initDefineProp(_this, 'rotate', _descriptor8, _this);
 
-    _initDefineProp(_this, 'scale', _descriptor9, _this);
+    _initDefineProp(_this, 'equalizeScale', _descriptor9, _this);
+
+    _initDefineProp(_this, 'scale', _descriptor10, _this);
 
     _this.color = color;
     return _this;
@@ -35375,20 +35367,29 @@ var Element = (_class3 = function (_Box) {
       _this3.translate(x, y);
     };
   }
-}), _descriptor9 = _applyDecoratedDescriptor(_class3.prototype, 'scale', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor9 = _applyDecoratedDescriptor(_class3.prototype, 'equalizeScale', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
   enumerable: true,
   initializer: function initializer() {
     var _this4 = this;
 
     return function (s, ox, oy) {
-      _this4.translate(-ox, -oy);
-      _this4.a *= s;
-      _this4.b *= s;
-      _this4.c *= s;
-      _this4.d *= s;
-      _this4.e *= s;
-      _this4.f *= s;
-      _this4.translate(ox, oy);
+      return _this4.scale(s, s, ox, oy);
+    };
+  }
+}), _descriptor10 = _applyDecoratedDescriptor(_class3.prototype, 'scale', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this5 = this;
+
+    return function (x, y, ox, oy) {
+      _this5.translate(-ox, -oy);
+      _this5.a *= x;
+      _this5.b *= y;
+      _this5.c *= x;
+      _this5.d *= y;
+      _this5.e *= x;
+      _this5.f *= y;
+      _this5.translate(ox, oy);
     };
   }
 })), _class3);
@@ -35396,13 +35397,13 @@ var Store = (_class5 = function () {
   function Store() {
     _classCallCheck(this, Store);
 
-    _initDefineProp(this, 'elements', _descriptor10, this);
+    _initDefineProp(this, 'elements', _descriptor11, this);
 
-    _initDefineProp(this, 'add', _descriptor11, this);
+    _initDefineProp(this, 'add', _descriptor12, this);
 
-    _initDefineProp(this, 'turn', _descriptor12, this);
+    _initDefineProp(this, 'turn', _descriptor13, this);
 
-    _initDefineProp(this, 'expand', _descriptor13, this);
+    _initDefineProp(this, 'expand', _descriptor14, this);
   }
 
   _createClass(Store, [{
@@ -35446,47 +35447,47 @@ var Store = (_class5 = function () {
   }]);
 
   return Store;
-}(), (_descriptor10 = _applyDecoratedDescriptor(_class5.prototype, 'elements', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
+}(), (_descriptor11 = _applyDecoratedDescriptor(_class5.prototype, 'elements', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
   enumerable: true,
   initializer: function initializer() {
     return __WEBPACK_IMPORTED_MODULE_0_mobx__["observable"].array();
   }
-}), _descriptor11 = _applyDecoratedDescriptor(_class5.prototype, 'add', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
-  enumerable: true,
-  initializer: function initializer() {
-    var _this5 = this;
-
-    return function (_) {
-      return _this5.elements.push(new Element(randColor()));
-    };
-  }
-}), _descriptor12 = _applyDecoratedDescriptor(_class5.prototype, 'turn', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor12 = _applyDecoratedDescriptor(_class5.prototype, 'add', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
   enumerable: true,
   initializer: function initializer() {
     var _this6 = this;
 
-    return function (value) {
-      var _boundingBoxOrigin = _this6.boundingBoxOrigin,
-          x = _boundingBoxOrigin.x,
-          y = _boundingBoxOrigin.y;
-
-      _this6.elements.forEach(function (element) {
-        return element.rotate(value, x, y);
-      });
+    return function (_) {
+      return _this6.elements.push(new Element(randColor()));
     };
   }
-}), _descriptor13 = _applyDecoratedDescriptor(_class5.prototype, 'expand', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor13 = _applyDecoratedDescriptor(_class5.prototype, 'turn', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
   enumerable: true,
   initializer: function initializer() {
     var _this7 = this;
 
     return function (value) {
-      var _boundingBox = _this7.boundingBox,
+      var _boundingBoxOrigin = _this7.boundingBoxOrigin,
+          x = _boundingBoxOrigin.x,
+          y = _boundingBoxOrigin.y;
+
+      _this7.elements.forEach(function (element) {
+        return element.rotate(value, x, y);
+      });
+    };
+  }
+}), _descriptor14 = _applyDecoratedDescriptor(_class5.prototype, 'expand', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+  enumerable: true,
+  initializer: function initializer() {
+    var _this8 = this;
+
+    return function (value) {
+      var _boundingBox = _this8.boundingBox,
           xmin = _boundingBox.xmin,
           ymin = _boundingBox.ymin;
 
-      _this7.elements.forEach(function (element) {
-        return element.scale(value, xmin, ymin);
+      _this8.elements.forEach(function (element) {
+        return element.equalizeScale(value, xmin, ymin);
       });
     };
   }

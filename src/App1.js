@@ -19,7 +19,7 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
     const len = parseInt(document.getElementById('len').value)
     const s = parseFloat(document.getElementById('val').value)
     const element = store.elements[len]
-    element.scale(s, element.corners.x3, element.corners.y3)
+    element.equalizeScale(s, element.corners.x3, element.corners.y3)
   }
   const turn = _ => store.turn(parseFloat(document.getElementById('val').value))
   const expand = _ => store.expand(parseFloat(document.getElementById('val').value))

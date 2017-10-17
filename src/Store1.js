@@ -1,13 +1,6 @@
 import {observable, action, computed} from 'mobx'
 
 const rad = Math.PI / 180
-const degreeRound = deg => {
-  switch (true) {
-    case deg < 0: return 360 + deg
-    case deg > 360: return deg - 360
-    default: return deg
-  }
-}
 const rand = () => Math.round(Math.random() * 255)
 const randColor = () => `rgb(${rand()},${rand()},${rand()})`
 
@@ -69,14 +62,16 @@ class Element extends Box {
     this.translate(x, y)
   }
 
-  @action scale = (s, ox, oy) => {
+  @action equalizeScale = (s, ox, oy) => this.scale(s, s, ox, oy)
+
+  @action scale = (x, y, ox, oy) => {
     this.translate(-ox, -oy)
-    this.a *= s
-    this.b *= s
-    this.c *= s
-    this.d *= s
-    this.e *= s
-    this.f *= s
+    this.a *= x
+    this.b *= y
+    this.c *= x
+    this.d *= y
+    this.e *= x
+    this.f *= y
     this.translate(ox, oy)
   }
 }
@@ -91,7 +86,7 @@ export default class Store {
   }
   @action expand = value => {
     const {xmin, ymin} = this.boundingBox
-    this.elements.forEach(element => element.scale(value, xmin, ymin))
+    this.elements.forEach(element => element.equalizeScale(value, xmin, ymin))
   }
 
   @computed get boundingBox () {
