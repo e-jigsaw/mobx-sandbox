@@ -23,7 +23,7 @@ class Element extends Box {
     return `matrix(${this.a},${this.b},${this.c},${this.d},${this.e},${this.f})`
   }
 
-  @computed get origins () {
+  @computed get origin () {
     return {
       x: (0.5 * this.a) + (0.5 * this.c) + this.e,
       y: (0.5 * this.b) + (0.5 * this.d) + this.f
@@ -41,6 +41,25 @@ class Element extends Box {
       x4: this.c + this.e,
       y4: this.d + this.f,
     }
+  }
+
+  @computed get midPoints () {
+    return {
+      x1: (0.5 * this.a) + this.e,
+      y1: (0.5 * this.b) + this.f,
+      x2: this.a + (0.5 * this.c) + this.e,
+      y2: this.b + (0.5 * this.d) + this.f,
+      x3: (0.5 * this.a) + this.c + this.e,
+      y3: (0.5 * this.b) + this.d + this.f,
+      x4: (0.5 * this.c) + this.e,
+      y4: (0.5 * this.d) + this.f
+    }
+  }
+
+  @computed get _rotate () {
+    return Math.atan2(
+      this.origin.y - this.midPoints.y4, this.origin.x - this.midPoints.x4
+    ) / rad
   }
 
   @action translate = (x, y) => {
@@ -65,14 +84,17 @@ class Element extends Box {
   @action equalizeScale = (s, ox, oy) => this.scale(s, s, ox, oy)
 
   @action scale = (x, y, ox, oy) => {
+    const r = this._rotate
+    const _ox = this.origin.x
+    const _oy = this.origin.y
+    this.rotate(-r, _ox, _oy)
     this.translate(-ox, -oy)
     this.a *= x
     this.b *= y
     this.c *= x
     this.d *= y
-    this.e *= x
-    this.f *= y
     this.translate(ox, oy)
+    this.rotate(r, _ox, _oy)
   }
 }
 

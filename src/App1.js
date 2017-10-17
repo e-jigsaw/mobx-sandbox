@@ -13,13 +13,19 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
     const len = parseInt(document.getElementById('len').value)
     const r = parseFloat(document.getElementById('val').value)
     const element = store.elements[len]
-    element.rotate(r, element.origins.x, element.origins.y)
+    element.rotate(r, element.origin.x, element.origin.y)
   }
   const scale = _ => {
     const len = parseInt(document.getElementById('len').value)
-    const s = parseFloat(document.getElementById('val').value)
     const element = store.elements[len]
-    element.equalizeScale(s, element.corners.x3, element.corners.y3)
+    const [x, y] = document.getElementById('val').value.split(',')
+    if (y === undefined) {
+      element.equalizeScale(parseFloat(x), element.corners.x3, element.corners.y3)
+    } else {
+      element.scale(
+        parseFloat(x), parseFloat(y), element.midPoints.x1, element.midPoints.y1
+      )
+    }
   }
   const turn = _ => store.turn(parseFloat(document.getElementById('val').value))
   const expand = _ => store.expand(parseFloat(document.getElementById('val').value))
@@ -30,7 +36,7 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
         width='1' height='1'
       )
       circle(
-        r='3' cx='{element.origins.x}' cy='{element.origins.y}' fill='#f00'
+        r='3' cx='{element.origin.x}' cy='{element.origin.y}' fill='#f00'
       )
       line(
         x1='{element.corners.x1}' y1='{element.corners.y1}'
@@ -51,6 +57,22 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
         x1='{element.corners.x4}' y1='{element.corners.y4}'
         x2='{element.corners.x1}' y2='{element.corners.y1}'
         stroke='#f00' strokeWidth='3'
+      )
+      circle(
+        fill='#00f'
+        r='3' cx='{element.midPoints.x1}' cy='{element.midPoints.y1}'
+      )
+      circle(
+        fill='#00f'
+        r='3' cx='{element.midPoints.x2}' cy='{element.midPoints.y2}'
+      )
+      circle(
+        fill='#00f'
+        r='3' cx='{element.midPoints.x3}' cy='{element.midPoints.y3}'
+      )
+      circle(
+        fill='#00f'
+        r='3' cx='{element.midPoints.x4}' cy='{element.midPoints.y4}'
       )
   `)
   return pug`
