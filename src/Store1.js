@@ -84,17 +84,14 @@ class Element extends Box {
   @action equalizeScale = (s, ox, oy) => this.scale(s, s, ox, oy)
 
   @action scale = (x, y, ox, oy) => {
-    const r = this._rotate
-    const _ox = this.origin.x
-    const _oy = this.origin.y
-    this.rotate(-r, _ox, _oy)
     this.translate(-ox, -oy)
     this.a *= x
     this.b *= y
     this.c *= x
     this.d *= y
+    this.e *= x
+    this.f *= y
     this.translate(ox, oy)
-    this.rotate(r, _ox, _oy)
   }
 }
 
