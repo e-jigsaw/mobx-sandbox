@@ -56,12 +56,6 @@ class Element extends Box {
     }
   }
 
-  @computed get _rotate () {
-    return Math.atan2(
-      this.origin.y - this.midPoints.y4, this.origin.x - this.midPoints.x4
-    ) / rad
-  }
-
   @action translate = (x, y) => {
     this.e += x
     this.f += y
