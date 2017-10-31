@@ -41,21 +41,41 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
       line(
         x1='{element.corners.x1}' y1='{element.corners.y1}'
         x2='{element.corners.x2}' y2='{element.corners.y2}'
-        stroke='#f00' strokeWidth='3'
+        stroke="{element.nearestLine === 1 ? '#ff0' : '#f00'}" strokeWidth='3'
       )
       line(
         x1='{element.corners.x2}' y1='{element.corners.y2}'
         x2='{element.corners.x3}' y2='{element.corners.y3}'
-        stroke='#f00' strokeWidth='3'
+        stroke="{element.nearestLine === 2 ? '#ff0' : '#f00'}" strokeWidth='3'
       )
       line(
         x1='{element.corners.x3}' y1='{element.corners.y3}'
         x2='{element.corners.x4}' y2='{element.corners.y4}'
-        stroke='#f00' strokeWidth='3'
+        stroke="{element.nearestLine === 3 ? '#ff0' : '#f00'}" strokeWidth='3'
       )
       line(
         x1='{element.corners.x4}' y1='{element.corners.y4}'
         x2='{element.corners.x1}' y2='{element.corners.y1}'
+        stroke="{element.nearestLine === 4 ? '#ff0' : '#f00'}" strokeWidth='3'
+      )
+      line(
+        x1='{store.point.x}' y1='{store.point.y}'
+        x2='{element.corners.x1}' y2='{element.corners.y1}'
+        stroke='#f00' strokeWidth='3'
+      )
+      line(
+        x1='{store.point.x}' y1='{store.point.y}'
+        x2='{element.corners.x2}' y2='{element.corners.y2}'
+        stroke='#f00' strokeWidth='3'
+      )
+      line(
+        x1='{store.point.x}' y1='{store.point.y}'
+        x2='{element.corners.x3}' y2='{element.corners.y3}'
+        stroke='#f00' strokeWidth='3'
+      )
+      line(
+        x1='{store.point.x}' y1='{store.point.y}'
+        x2='{element.corners.x4}' y2='{element.corners.y4}'
         stroke='#f00' strokeWidth='3'
       )
       circle(
@@ -76,7 +96,7 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
       )
   `)
   return pug`
-    div
+    div(onMouseMove='{store.onMove}')
       div
         span {store.elements.length}
         input(id='len')
@@ -88,7 +108,7 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
         button(onClick='{expand}') expand
       div
         button(onClick='{store.add}') add
-      svg(width='100%' height='100%')
+      svg(id='svg' width='100%' height='100%')
         g {elements}
         g
           line(
@@ -115,5 +135,9 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
             r='3' fill='#0f0'
             cx='{store.boundingBoxOrigin.x}' cy='{store.boundingBoxOrigin.y}'
           )
+        circle(
+          r='3' fill='#f00'
+          cx='{store.point.x}' cy='{store.point.y}'
+        )
   `
 }))
