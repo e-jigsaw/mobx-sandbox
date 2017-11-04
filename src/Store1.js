@@ -94,47 +94,28 @@ class Element extends Box {
     this.translate(ox, oy)
   }
 
-  _area = (p1, p2, p3) => {
-    return Math.abs(
-      (p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y)) / 2
-    )
-  }
-
-  @action verticalLines = (po) => {
-    const {x1, x2, x3, x4, y1, y2, y3, y4} = this.corners
+  @action verticalLines = po => {
+    const {x1, x2, x3, x4, y1, y2, y3, y4} = this.midPoints
     const p1 = {x: x1, y: y1}
     const p2 = {x: x2, y: y2}
     const p3 = {x: x3, y: y3}
     const p4 = {x: x4, y: y4}
-    const s1 = this._area(po, p1, p2)
-    const s2 = this._area(po, p2, p3)
-    const s3 = this._area(po, p3, p4)
-    const s4 = this._area(po, p4, p1)
-    if (s1 === 0) {
-      this.nearestLine = 1
-    } else if (s2 === 0) {
-      this.nearestLine = 2
-    } else if (s3 === 0) {
-      this.nearestLine = 3
-    } else if (s4 === 0) {
-      this.nearestLine = 4
-    } else {
-      const candidate = [
-        [(2 * s1) / Math.sqrt(
-          Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2)
-        ), 1],
-        [(2 * s2) / Math.sqrt(
-          Math.pow((p3.x - p2.x), 2) + Math.pow((p3.y - p2.y), 2)
-        ), 2],
-        [(2 * s3) / Math.sqrt(
-          Math.pow((p4.x - p3.x), 2) + Math.pow((p4.y - p3.y), 2)
-        ), 3],
-        [(2 * s4) / Math.sqrt(
-          Math.pow((p1.x - p4.x), 2) + Math.pow((p1.y - p4.y), 2)
-        ), 4]
-      ].sort((x, y) => x[0] - y[0])
-      this.nearestLine = candidate[0][1]
-    }
+    const candidate = [
+      [Math.sqrt(
+        Math.pow((po.x - p1.x), 2) + Math.pow((po.y - p1.y), 2)
+      ), 1],
+      [Math.sqrt(
+        Math.pow((po.x - p2.x), 2) + Math.pow((po.y - p2.y), 2)
+      ), 2],
+      [Math.sqrt(
+        Math.pow((po.x - p3.x), 2) + Math.pow((po.y - p3.y), 2)
+      ), 3],
+      [Math.sqrt(
+        Math.pow((po.x - p4.x), 2) + Math.pow((po.y - p4.y), 2)
+      ), 4]
+    ].sort((x, y) => x[0] - y[0])
+    console.log(candidate)
+    this.nearestLine = candidate[0][1]
   }
 }
 
