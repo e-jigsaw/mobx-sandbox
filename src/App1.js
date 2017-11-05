@@ -85,6 +85,8 @@ export default inject(({store}) => ({store}))(observer(({store}) => {
         button(onClick='{scale}') scale
         button(onClick='{turn}') turn
         button(onClick='{expand}') expand
+        button(onClick='{store.undo}') undo
+        button(onClick='{store.redo}') redo
       div
         button(onClick='{store.add}') add
       svg(width='100%' height='100%')

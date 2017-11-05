@@ -1,4 +1,5 @@
 import 'babel-polyfill'
+import {onSnapshot} from 'mobx-state-tree'
 import {createElement} from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'mobx-react'
@@ -8,7 +9,9 @@ import {Store} from './src/Store1.js'
 
 enableLogging()
 const store = Store.create({
-  elements: []
+  elements: [],
+  undoStack: [],
+  redoStack: []
 })
 window.store = store
 

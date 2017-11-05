@@ -1,4 +1,4 @@
-import {types} from 'mobx-state-tree'
+import {types, getSnapshot, applySnapshot} from 'mobx-state-tree'
 
 const rad = Math.PI / 180
 const rand = () => Math.round(Math.random() * 255)
@@ -78,18 +78,39 @@ const Box = types.model({
 }))
 
 export const Store = types.model({
-  elements: types.array(Box)
+  elements: types.array(Box),
+  undoStack: types.array(types.frozen),
+  redoStack: types.array(types.frozen)
 }).actions(self => ({
-  add: _ => self.elements.push({
-    color: randColor()
-  }),
+  save: () => {
+    self.redoStack.replace([])
+    self.undoStack.push(getSnapshot(self.elements))
+  },
+  add: _ => {
+    self.save()
+    self.elements.push({
+      color: randColor()
+    })
+  },
   turn: value => {
+    self.save()
     const {x, y} = self.boundingBoxOrigin
     self.elements.forEach(element => element.rotate(value, x, y))
   },
   expand: value => {
+    self.save()
     const {xmin, ymin} = self.boundingBox
     self.elements.forEach(element => element.equalizeScale(value, xmin, ymin))
+  },
+  undo: _ => {
+    const next = self.undoStack.pop()
+    self.redoStack.push(getSnapshot(self.elements))
+    applySnapshot(self.elements, next)
+  },
+  redo: _ => {
+    const next = self.redoStack.pop()
+    self.undoStack.push(getSnapshot(self.elements))
+    applySnapshot(self.elements, next)
   }
 })).views(self => ({
   get boundingBox () {
