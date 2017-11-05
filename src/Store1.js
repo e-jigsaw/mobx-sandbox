@@ -1,109 +1,99 @@
-import {observable, action, computed} from 'mobx'
+import {types} from 'mobx-state-tree'
 
 const rad = Math.PI / 180
 const rand = () => Math.round(Math.random() * 255)
 const randColor = () => `rgb(${rand()},${rand()},${rand()})`
 
-class Box {
-  @observable a = 100
-  @observable b = 0
-  @observable c = 0
-  @observable d = 100
-  @observable e = 100
-  @observable f = 100
-}
-
-class Element extends Box {
-  constructor (color) {
-    super()
-    this.color = color
-  }
-
-  @computed get transform () {
-    return `matrix(${this.a},${this.b},${this.c},${this.d},${this.e},${this.f})`
-  }
-
-  @computed get origin () {
+const Box = types.model({
+  a: 100,
+  b: 0,
+  c: 0,
+  d: 100,
+  e: 100,
+  f: 100,
+  color: '#f00'
+}).views(self => ({
+  get transform () {
+    return `matrix(${self.a},${self.b},${self.c},${self.d},${self.e},${self.f})`
+  },
+  get origin () {
     return {
-      x: (0.5 * this.a) + (0.5 * this.c) + this.e,
-      y: (0.5 * this.b) + (0.5 * this.d) + this.f
+      x: (0.5 * self.a) + (0.5 * self.c) + self.e,
+      y: (0.5 * self.b) + (0.5 * self.d) + self.f
+    }
+  },
+  get corners () {
+    return {
+      x1: self.e,
+      y1: self.f,
+      x2: self.a + self.e,
+      y2: self.b + self.f,
+      x3: self.a + self.c + self.e,
+      y3: self.b + self.d + self.f,
+      x4: self.c + self.e,
+      y4: self.d + self.f,
+    }
+  },
+  get midPoints () {
+    return {
+      x1: (0.5 * self.a) + self.e,
+      y1: (0.5 * self.b) + self.f,
+      x2: self.a + (0.5 * self.c) + self.e,
+      y2: self.b + (0.5 * self.d) + self.f,
+      x3: (0.5 * self.a) + self.c + self.e,
+      y3: (0.5 * self.b) + self.d + self.f,
+      x4: (0.5 * self.c) + self.e,
+      y4: (0.5 * self.d) + self.f
     }
   }
-
-  @computed get corners () {
-    return {
-      x1: this.e,
-      y1: this.f,
-      x2: this.a + this.e,
-      y2: this.b + this.f,
-      x3: this.a + this.c + this.e,
-      y3: this.b + this.d + this.f,
-      x4: this.c + this.e,
-      y4: this.d + this.f,
-    }
-  }
-
-  @computed get midPoints () {
-    return {
-      x1: (0.5 * this.a) + this.e,
-      y1: (0.5 * this.b) + this.f,
-      x2: this.a + (0.5 * this.c) + this.e,
-      y2: this.b + (0.5 * this.d) + this.f,
-      x3: (0.5 * this.a) + this.c + this.e,
-      y3: (0.5 * this.b) + this.d + this.f,
-      x4: (0.5 * this.c) + this.e,
-      y4: (0.5 * this.d) + this.f
-    }
-  }
-
-  @action translate = (x, y) => {
-    this.e += x
-    this.f += y
-  }
-
-  @action rotate = (r, x, y) => {
+})).actions(self => ({
+  translate: (x, y) => {
+    self.e += x
+    self.f += y
+  },
+  rotate: (r, x, y) => {
     const sin = Math.sin(r * rad)
     const cos = Math.cos(r * rad)
-    this.translate(-x, -y)
-    const {a, b, c, d, e, f} = this
-    this.a = (a * cos) - (b * sin)
-    this.b = (a * sin) + (b * cos)
-    this.c = (c * cos) - (d * sin)
-    this.d = (c * sin) + (d * cos)
-    this.e = (e * cos) - (f * sin)
-    this.f = (e * sin) + (f * cos)
-    this.translate(x, y)
+    self.translate(-x, -y)
+    const {a, b, c, d, e, f} = self
+    self.a = (a * cos) - (b * sin)
+    self.b = (a * sin) + (b * cos)
+    self.c = (c * cos) - (d * sin)
+    self.d = (c * sin) + (d * cos)
+    self.e = (e * cos) - (f * sin)
+    self.f = (e * sin) + (f * cos)
+    self.translate(x, y)
+  },
+  equalizeScale: (s, ox, oy) => self.scale(s, s, ox, oy),
+  scale: (x, y, ox, oy) => {
+    self.translate(-ox, -oy)
+    self.a *= x
+    self.b *= y
+    self.c *= x
+    self.d *= y
+    self.e *= x
+    self.f *= y
+    self.translate(ox, oy)
   }
+}))
 
-  @action equalizeScale = (s, ox, oy) => this.scale(s, s, ox, oy)
-
-  @action scale = (x, y, ox, oy) => {
-    this.translate(-ox, -oy)
-    this.a *= x
-    this.b *= y
-    this.c *= x
-    this.d *= y
-    this.e *= x
-    this.f *= y
-    this.translate(ox, oy)
+export const Store = types.model({
+  elements: types.array(Box)
+}).actions(self => ({
+  add: _ => self.elements.push({
+    color: randColor()
+  }),
+  turn: value => {
+    const {x, y} = self.boundingBoxOrigin
+    self.elements.forEach(element => element.rotate(value, x, y))
+  },
+  expand: value => {
+    const {xmin, ymin} = self.boundingBox
+    self.elements.forEach(element => element.equalizeScale(value, xmin, ymin))
   }
-}
-
-export default class Store {
-  @observable elements = observable.array()
-
-  @action add = _ => this.elements.push(new Element(randColor()))
-  @action turn = value => {
-    const {x, y} = this.boundingBoxOrigin
-    this.elements.forEach(element => element.rotate(value, x, y))
-  }
-  @action expand = value => {
-    const {xmin, ymin} = this.boundingBox
-    this.elements.forEach(element => element.equalizeScale(value, xmin, ymin))
-  }
-
-  @computed get boundingBox () {
-    return this.elements.reduce((prev, element) => {
+})).views(self => ({
+  get boundingBox () {
+    return self.elements.reduce((prev, element) => {
       if (prev.xmin === null) {
         prev.xmin = element.corners.x1
         prev.ymin = element.corners.y1
@@ -125,20 +115,19 @@ export default class Store {
       xmax: null,
       ymax: null
     })
-  }
-
-  @computed get boundingBoxOrigin () {
-    if (this.boundingBox.xmin === null) return {
+  },
+  get boundingBoxOrigin () {
+    if (self.boundingBox.xmin === null) return {
       x: 0,
       y: 0
     }
     return {
-      x: this.boundingBox.xmax - (
-        (this.boundingBox.xmax - this.boundingBox.xmin) / 2
+      x: self.boundingBox.xmax - (
+        (self.boundingBox.xmax - self.boundingBox.xmin) / 2
       ),
-      y: this.boundingBox.ymax - (
-        (this.boundingBox.ymax - this.boundingBox.ymin) / 2
+      y: self.boundingBox.ymax - (
+        (self.boundingBox.ymax - self.boundingBox.ymin) / 2
       )
     }
   }
-}
+}))

@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {action} from 'mobx'
 import {observer, inject} from 'mobx-react'
 
 export default inject(({store}) => ({store}))(observer(({store}) => {
