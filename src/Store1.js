@@ -91,15 +91,41 @@ class Element extends Box {
 
 export default class Store {
   @observable elements = observable.array()
+  undoStack = []
+  redoStack = []
 
-  @action add = _ => this.elements.push(new Element(randColor()))
+  save = () => {
+    this.undoStack.push(this.elements.toJS())
+    this.redoStack = []
+  }
+
+  @action add = _ => {
+    this.save()
+    this.elements.push(new Element(randColor()))
+  }
+
   @action turn = value => {
+    this.save()
     const {x, y} = this.boundingBoxOrigin
     this.elements.forEach(element => element.rotate(value, x, y))
   }
+
   @action expand = value => {
+    this.save()
     const {xmin, ymin} = this.boundingBox
     this.elements.forEach(element => element.equalizeScale(value, xmin, ymin))
+  }
+
+  @action undo = _ => {
+    this.redoStack.push(this.elements.toJS())
+    const prev = this.undoStack.pop()
+    this.elements.replace(prev)
+  }
+
+  @action redo = _ => {
+    this.undoStack.push(this.elements.toJS())
+    const next = this.redoStack.pop()
+    this.elements.replace(next)
   }
 
   @computed get boundingBox () {
